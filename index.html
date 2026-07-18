@@ -1,17 +1,148 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ゆる英語5分</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ゆる英語5分</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin: 0 0 8px;
+    }
+
+    .catch {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 12px 0 24px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .small {
+      color: #666;
+      margin-top: 12px;
+    }
+
+    .lesson {
+      display: none;
+    }
+
+    .jp {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .en {
+      font-size: 28px;
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+
+    .guide {
+      color: #666;
+      margin-bottom: 16px;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <div class="card" id="top">
+      <h1>📘 ゆる英語5分</h1>
+      <div class="catch">今日も5分だけ。</div>
+      <p>英語が苦手な人でも、気楽に5分だけ。</p>
+      <button onclick="startLesson()">▶ 学習を始める</button>
+      <div class="small">Lesson 1「あいさつ」</div>
+      <div class="small">進捗 1 / 100</div>
+    </div>
 
-<h1>📘 ゆる英語5分</h1>
+    <div class="card lesson" id="lesson">
+      <h2>Lesson 1「あいさつ」</h2>
+      <div class="jp" id="jp"></div>
+      <div class="en" id="en"></div>
+      <div class="guide">英語を聞いて、心の中でまねしてみましょう。</div>
+      <button onclick="nextPhrase()">次へ</button>
+    </div>
+  </div>
 
-<h2>今日も5分だけ。</h2>
+  <script>
+    const phrases = [
+      { jp: "おはようございます", en: "Good morning" },
+      { jp: "こんにちは", en: "Hello" },
+      { jp: "こんばんは", en: "Good evening" },
+      { jp: "ありがとう", en: "Thank you" }
+    ];
 
-<p>初代テスターへようこそ！</p>
+    let current = 0;
 
+    function speak(text) {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        utterance.rate = 0.8;
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showPhrase() {
+      document.getElementById("jp").textContent = phrases[current].jp;
+      document.getElementById("en").textContent = phrases[current].en;
+      speak(phrases[current].en);
+    }
+
+    function startLesson() {
+      document.getElementById("top").style.display = "none";
+      document.getElementById("lesson").style.display = "block";
+      current = 0;
+      showPhrase();
+    }
+
+    function nextPhrase() {
+      current++;
+      if (current >= phrases.length) {
+        document.getElementById("lesson").innerHTML =
+          "<h2>🎉 お疲れさまでした！</h2>" +
+          "<p>今日も5分だけ。続けられました！</p>" +
+          "<button onclick='location.reload()'>トップへ戻る</button>";
+      } else {
+        showPhrase();
+      }
+    }
+  </script>
 </body>
 </html>
